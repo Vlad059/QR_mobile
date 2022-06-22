@@ -21,29 +21,41 @@
 // See https://cordova.apache.org/docs/en/latest/cordova/events/events.html#deviceready
 document.addEventListener('deviceready', onDeviceReady, false);
 
-function onDeviceReady() {
-    // Cordova is now initialized. Have fun!
+function onChosenQrscanner()
+{
     try{       
         function error() {
           console.log('some error');
         }
         
         function success( status ) {
-          if( !status.hasPermission ) console.log('has not permission');
-          else console.log('has permission');
+          if( !status.hasPermission ) {
+            console.log('has not permission');
+          }
+          else {
+            console.log('has permission');
+            let select = document.getElementById('select_component');
+            let get_camera_e = new CustomEvent('get_camera', { bubbles: true })
+            select.dispatchEvent(get_camera_e);  
+          }
         }
 
         let permissions = cordova.plugins.permissions;
     
         permissions.requestPermission(permissions.CAMERA, success, error);
 
-        // srcs=['/js/chunk-vendors.200fa63e.js','/js/app.bc6c42ce.js'].forEach(element => {
-        //     let script = document.createElement('script');
-        //     script.src = element;
-        //     document.head.append(script);
-        // })
     }
     catch (err){
         alert(err);
     }
 }
+
+function onDeviceReady() {
+    // Cordova is now initialized. Have fun!
+    document.addEventListener('chosen_qrscanner', onChosenQrscanner);
+}
+
+
+
+
+
