@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="qr_gen_div">
         <input v-model="read_string">
         <qrcode-vue :value="read_string" :size="300" level="H"></qrcode-vue>
     </div>   
@@ -23,4 +23,8 @@ export default {
 
 
 <style>
+.qr_gen_div{
+    display: flex;
+    flex-direction: column;
+}
 </style>

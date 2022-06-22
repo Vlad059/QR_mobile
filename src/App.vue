@@ -1,9 +1,9 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png">
-  <select v-model="current_component">
+  <select id="select_component" v-model="current_component" @input="sendEvent">
     <option v-for="el in comps" :key="el.index" :value="el">{{ el }}</option>
   </select>
-  <component :is="current_component"></component>
+  <component :is="watch_current_component"></component>
 </template>
 
 <script>
@@ -13,11 +13,39 @@ import QrScanner from './components/qr_scanner.vue'
 export default {
   data (){
     return{
-      current_component: 'QrScanner',
+      camera_permission: false,
+      watch_current_component: 'QrGenerator',
+      current_component: 'QrGenerator',
       comps: ['QrScanner', 'QrGenerator']
     }   
   },
   name: 'App',
+  watch:{
+    current_component(newCurrent, oldCurrent){
+      if(newCurrent == 'QrScanner' && !this.camera_permission){      
+        this.current_component = oldCurrent;
+      }
+      else{
+        this.watch_current_component = newCurrent;
+      }
+    }
+  },
+  methods:{
+   sendEvent(e){
+    if( e.target.value == 'QrScanner' && !this.camera_permission)
+    {
+      let select = document.getElementById('select_component');
+      select.addEventListener('get_camera', ()=>{
+        this.camera_permission = true;
+        this.current_component = 'QrScanner';
+        this.watch_current_component = 'QrScanner';
+        })
+
+      let chosen_qrscanner_e = new CustomEvent('chosen_qrscanner', { bubbles: true});     
+      document.dispatchEvent(chosen_qrscanner_e);          
+    }
+   } 
+  },
   components: {
     QrGenerator,
     QrScanner
